@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Unite;
+use App\Entity\Client;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,4 +41,18 @@ class UniteRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findByClient(Client $client): array
+    {
+        return $this->createQueryBuilder('u')
+            ->join('u.commandes', 'c')
+            ->andWhere('c.client = :client')
+            ->setParameter('client', $client)
+            ->leftJoin('u.baie', 'b')
+            ->addSelect('b')
+            ->distinct()
+            ->orderBy('b.numero')
+            ->addOrderBy('u.numero')
+            ->getQuery()
+            ->getResult();
+    }
 }

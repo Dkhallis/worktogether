@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ unite.emplacement }}{% endblock %}
+
+{% block body %}
+<h1>Modifier l'unité {{ unite.emplacement }}</h1>
+<p>État actuel : {{ unite.etat.value|upper }}</p>
+
+{{ form_start(form) }}
+{{ form_widget(form) }}
+<button type="submit">Enregistrer</button>
+{{ form_end(form) }}
+
+<p><a href="{{ path('app_mes_unites') }}">Retour à mes unités</a></p>
+{% endblock %}
