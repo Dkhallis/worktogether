@@ -38,9 +38,16 @@ class Unite
     #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'unites')]
     private Collection $commandes;
 
+    /**
+     * @var Collection<int, Intervention>
+     */
+    #[ORM\ManyToMany(targetEntity: Intervention::class, mappedBy: 'Unites')]
+    private Collection $interventions;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->interventions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -135,6 +142,33 @@ class Unite
     {
         if ($this->commandes->removeElement($commande)) {
             $commande->removeUnite($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Intervention>
+     */
+    public function getInterventions(): Collection
+    {
+        return $this->interventions;
+    }
+
+    public function addIntervention(Intervention $intervention): static
+    {
+        if (!$this->interventions->contains($intervention)) {
+            $this->interventions->add($intervention);
+            $intervention->addUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIntervention(Intervention $intervention): static
+    {
+        if ($this->interventions->removeElement($intervention)) {
+            $intervention->removeUnite($this);
         }
 
         return $this;
