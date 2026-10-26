@@ -30,12 +30,12 @@ Les pages de présentation de l'entreprise et des offres, la commande et le paie
 Pour tester
 
 Pour lancer le projet :
-"
+``
 bash
 -> composer install
 -> docker compose up -d
 -> symfony console doctrine:migrations:migrate
 -> symfony console doctrine:fixtures:load
 -> symfony serve -d
-"
+``
 Ensuite, aller sur https://127.0.0.1:8000 et se connecter avec le compte client@worktogether.fr et le mot de passe client123.
