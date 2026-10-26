@@ -6,6 +6,12 @@ services:
       - "3306"
 ###< doctrine/doctrine-bundle ###
 
+  adminer:
+    image: adminer
+    restart: on-failure
+    ports:
+      - '8080:8080'
+
 ###> symfony/mailer ###
   mailer:
     image: axllent/mailpit
