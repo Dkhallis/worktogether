@@ -91,4 +91,11 @@ class Client extends Compte
 
         return $this;
     }
+    public function getRoles(): array
+    {
+        $roles = parent::getRoles();
+        $roles[] = 'ROLE_CLIENT';
+
+        return array_unique($roles);
+    }
 }

@@ -12,9 +12,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
+#[IsGranted('ROLE_CLIENT')]
 class UniteController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
@@ -24,10 +25,8 @@ class UniteController extends AbstractController
     }
 
     #[Route('/mes-unites', name: 'app_mes_unites')]
-    public function index(UniteRepository $uniteRepository): Response
+    public function index(#[CurrentUser] Client $client, UniteRepository $uniteRepository): Response
     {
-        $client = $this->getClientConnecte();
-
         return $this->render('unite/index.html.twig', [
             'unites' => $uniteRepository->findByClient($client),
         ]);
@@ -37,7 +36,6 @@ class UniteController extends AbstractController
     #[IsGranted(UniteVoter::MODIFIER, subject: 'unite')]
     public function modifier(Unite $unite, Request $request, EntityManagerInterface $entityManager): Response
     {
-
         $form = $this->createForm(UniteType::class, $unite);
         $form->handleRequest($request);
 
@@ -53,17 +51,4 @@ class UniteController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    private function getClientConnecte(): Client
-    {
-        $user = $this->getUser();
-
-        if (!$user instanceof Client) {
-            throw $this->createAccessDeniedException('Cet espace est réservé aux clients.');
-        }
-
-        return $user;
-    }
-
-
 }
