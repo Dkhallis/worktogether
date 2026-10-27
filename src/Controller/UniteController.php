@@ -6,6 +6,7 @@ use App\Entity\Client;
 use App\Entity\Unite;
 use App\Form\UniteType;
 use App\Repository\UniteRepository;
+use App\Security\Voter\UniteVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,9 +34,9 @@ class UniteController extends AbstractController
     }
 
     #[Route('/mes-unites/{id}/modifier', name: 'app_unite_modifier')]
+    #[IsGranted(UniteVoter::MODIFIER, subject: 'unite')]
     public function modifier(Unite $unite, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $this->verifierProprietaire($unite);
 
         $form = $this->createForm(UniteType::class, $unite);
         $form->handleRequest($request);
@@ -64,16 +65,5 @@ class UniteController extends AbstractController
         return $user;
     }
 
-    private function verifierProprietaire(Unite $unite): void
-    {
-        $client = $this->getClientConnecte();
 
-        foreach ($unite->getCommandes() as $commande) {
-            if ($commande->getClient() === $client) {
-                return;
-            }
-        }
-
-        throw $this->createAccessDeniedException('Cette unité ne vous appartient pas.');
-    }
 }
