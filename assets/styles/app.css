@@ -1,3 +1,23 @@
-body {
-    background-color: skyblue;
+.table-unites {
+    border-collapse: collapse;
+}
+
+.table-unites th,
+.table-unites td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+.badge {
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.badge-bleu { background-color: #3b82f6; }
+.badge-vert { background-color: #22c55e; }
+.badge-gris { background-color: #9ca3af; }
+
+.flash-success {
+    color: green;
 }

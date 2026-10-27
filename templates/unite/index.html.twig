@@ -3,50 +3,48 @@
 {% block title %}Mes unités{% endblock %}
 
 {% block body %}
-{% set couleurs = {'bleu': '#3b82f6', 'vert': '#22c55e', 'gris': '#9ca3af'} %}
+    <h1>Mes unités</h1>
+    <p>
+        Connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}
+        — <a href="{{ path('app_logout') }}">Se déconnecter</a>
+    </p>
 
-<h1>Mes unités</h1>
-<p>
-    Connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}
-    — <a href="{{ path('app_logout') }}">Se déconnecter</a>
-</p>
+    {% for message in app.flashes('success') %}
+        <p class="flash-success">{{ message }}</p>
+    {% endfor %}
 
-{% for message in app.flashes('success') %}
-<p style="color: green;">{{ message }}</p>
-{% endfor %}
-
-{% if unites is empty %}
-<p>Vous n'avez encore aucune unité.</p>
-{% else %}
-<table border="1" cellpadding="8" style="border-collapse: collapse;">
-    <thead>
-    <tr>
-        <th>Emplacement</th>
-        <th>Nom</th>
-        <th>Type</th>
-        <th>État</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for unite in unites %}
-    <tr>
-        <td>{{ unite.emplacement }}</td>
-        <td>{{ unite.nomPersonnalise ?? '—' }}</td>
-        <td>
-            {% if unite.typeUnite %}
-            <span style="background: {{ couleurs[unite.typeUnite.couleur] ?? '#ccc' }}; color: white; padding: 2px 8px; border-radius: 4px;">
+    {% if unites is empty %}
+        <p>Vous n'avez encore aucune unité.</p>
+    {% else %}
+        <table class="table-unites">
+            <thead>
+            <tr>
+                <th>Emplacement</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>État</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for unite in unites %}
+                <tr>
+                    <td>{{ unite.emplacement }}</td>
+                    <td>{{ unite.nomPersonnalise ?? '—' }}</td>
+                    <td>
+                        {% if unite.typeUnite %}
+                            <span class="badge badge-{{ unite.typeUnite.couleur }}">
                                     {{ unite.typeUnite.libelle }}
                                 </span>
-            {% else %}
-            —
-            {% endif %}
-        </td>
-        <td>{{ unite.etat.value|upper }}</td>
-        <td><a href="{{ path('app_unite_modifier', {id: unite.id}) }}">Modifier</a></td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% endif %}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ unite.etat.value|upper }}</td>
+                    <td><a href="{{ path('app_unite_modifier', {id: unite.id}) }}">Modifier</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}
