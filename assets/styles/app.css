@@ -1,3 +1,6 @@
+/* ===== Page "Mes unités" ===== */
+
+/* Tableau de la liste des unités */
 .table-unites {
     border-collapse: collapse;
 }
@@ -8,16 +11,19 @@
     padding: 8px;
 }
 
+/* Étiquette de couleur pour le type d'une unité */
 .badge {
     color: white;
     padding: 2px 8px;
     border-radius: 4px;
 }
 
+/* Une classe par couleur stockée dans TypeUnite (badge-bleu, badge-vert...) */
 .badge-bleu { background-color: #3b82f6; }
 .badge-vert { background-color: #22c55e; }
 .badge-gris { background-color: #9ca3af; }
 
+/* Message de confirmation après une modification */
 .flash-success {
     color: green;
 }

@@ -1,12 +1,16 @@
+{# Page de modification du nom et du type d'une unité #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Modifier {{ unite.emplacement }}{% endblock %}
 
 {% block body %}
 <h1>Modifier l'unité {{ unite.emplacement }}</h1>
-<p>État actuel : {{ unite.etat.value|upper }}</p>
 
-{{ form_start(form) }}
+    {# L'état est seulement affiché : le client ne peut pas le modifier #}
+    <p>État actuel : {{ unite.etat.value|upper }}</p>
+
+    {# Le formulaire UniteType (nom et type) #}
+    {{ form_start(form) }}
 {{ form_widget(form) }}
 <button type="submit">Enregistrer</button>
 {{ form_end(form) }}

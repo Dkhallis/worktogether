@@ -7,6 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Une baie du datacenter. WorkTogether en possède 30 (B001 à B030).
+ * Chaque baie contient 42 unités.
+ */
 #[ORM\Entity(repositoryClass: BaieRepository::class)]
 class Baie
 {
@@ -15,12 +19,13 @@ class Baie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10)]// Numéro de la baie (ex : B001)
     private ?string $numero = null;
 
     /**
      * @var Collection<int, Unite>
      */
+    // Les 42 unités de la baie
     #[ORM\OneToMany(targetEntity: Unite::class, mappedBy: 'baie', orphanRemoval: true)]
     private Collection $unites;
 

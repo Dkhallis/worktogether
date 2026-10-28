@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\LigneCommandeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Une ligne d'une commande : une offre achetée, avec sa quantité et son prix.
+ */
 #[ORM\Entity(repositoryClass: LigneCommandeRepository::class)]
 class LigneCommande
 {
@@ -13,16 +16,18 @@ class LigneCommande
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column] // Nombre de fois que l'offre est achetée
     private ?int $quantite = null;
 
-    #[ORM\Column]
+    #[ORM\Column]// Prix au moment de l'achat (gardé même si le prix de l'offre change)
     private ?float $prix = null;
 
+    // La commande qui contient cette ligne
     #[ORM\ManyToOne(inversedBy: 'lignes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Commande $commande = null;
 
+    // L'offre achetée
     #[ORM\ManyToOne(inversedBy: 'lignesCommande')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Offre $offre = null;

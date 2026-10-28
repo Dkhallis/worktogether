@@ -9,6 +9,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Une intervention de WorkTogether sur une ou plusieurs unités.
+ */
 #[ORM\Entity(repositoryClass: InterventionRepository::class)]
 class Intervention
 {
@@ -17,21 +20,24 @@ class Intervention
     #[ORM\Column]
     private ?int $id = null;
 
+    // Type : INCIDENT ou MAINTENANCE
     #[ORM\Column(enumType: TypeIntervention::class)]
     private ?TypeIntervention $type = null;
 
+    // Description de l'intervention
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column]// Date et heure de début
     private ?\DateTimeImmutable $dateDebut = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true)]// Date et heure de fin (vide si l'intervention est en cours)
     private ?\DateTimeImmutable $dateFin = null;
 
     /**
      * @var Collection<int, Unite>
      */
+    // Les unités concernées
     #[ORM\ManyToMany(targetEntity: Unite::class, inversedBy: 'interventions')]
     private Collection $Unites;
 

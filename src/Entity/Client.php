@@ -6,21 +6,31 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Un client de WorkTogether, qui loue des unités.
+ *
+ * Il hérite de Compte (email, mot de passe, nom, prénom, rôles)
+ * et ajoute ses informations personnelles et ses commandes.
+ */
 #[ORM\Entity]
 class Client extends Compte
 {
+    // Numéro de téléphone (en texte pour garder le 0 du début)
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $telephone = null;
 
+    // Adresse postale
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
+    // Nom de la société du client
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $societe = null;
 
     /**
      * @var Collection<int, Commande>
      */
+    // Les commandes passées par ce client
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'client')]
     private Collection $commandes;
 
@@ -91,6 +101,11 @@ class Client extends Compte
 
         return $this;
     }
+    /**
+     * Un client a les rôles de base d'un compte, plus ROLE_CLIENT,
+     * ajouté automatiquement. Il sert à protéger l'espace client
+     * avec #[IsGranted('ROLE_CLIENT')].
+     */
     public function getRoles(): array
     {
         $roles = parent::getRoles();

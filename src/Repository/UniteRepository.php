@@ -41,6 +41,11 @@ class UniteRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * Renvoie les unités d'un client : celles qui font partie
+     * d'une de ses commandes, triées par baie puis par numéro.
+     */
     public function findByClient(Client $client): array
     {
         return $this->createQueryBuilder('u')

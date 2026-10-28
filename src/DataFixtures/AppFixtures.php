@@ -18,8 +18,16 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+
+/**
+ * Données de test pour remplir la base.
+ *
+ * Commande pour les charger (attention, elle vide la base avant) :
+ *     symfony console doctrine:fixtures:load
+ */
 class AppFixtures extends Fixture
 {
+    // Le service qui chiffre les mots de passe
     public function __construct(private UserPasswordHasherInterface $hasher)
     {
     }
@@ -37,9 +45,10 @@ class AppFixtures extends Fixture
         }
 
         // 2. Les 30 baies (B001 à B030), chacune avec 42 unités (U01 à U42)
-        $unitesB001 = [];
+        $unitesB001 = []; // On garde les unités de B001 pour les donner au client plus bas
         for ($b = 1; $b <= 30; $b++) {
             $baie = new Baie();
+            // str_pad ajoute des 0 devant : 1 devient 001
             $baie->setNumero('B' . str_pad($b, 3, '0', STR_PAD_LEFT));
             $manager->persist($baie);
 
@@ -56,7 +65,7 @@ class AppFixtures extends Fixture
             }
         }
 
-        // 3. Les 4 offres du sujet
+        // 3. Les 4 offres du sujet : [nom, nombre d'unités, prix mensuel, remise en %] =====
         $offres = [];
         foreach ([
                      ['Base', 1, 100, 0],
@@ -71,7 +80,7 @@ class AppFixtures extends Fixture
             $offre->setRemise($remise);
             $offre->setActive(true);
             $manager->persist($offre);
-            $offres[$nom] = $offre;
+            $offres[$nom] = $offre; // rangées par nom pour les retrouver facilement
         }
 
         // 4. Le personnel : un administrateur et un comptable
@@ -80,6 +89,7 @@ class AppFixtures extends Fixture
         $admin->setNom('Martin');
         $admin->setPrenom('Alice');
         $admin->setRoles(['ROLE_ADMIN']);
+        // Le mot de passe est chiffré avant d'être enregistré
         $admin->setPassword($this->hasher->hashPassword($admin, 'admin123'));
         $admin->setDateCreation(new \DateTimeImmutable());
         $manager->persist($admin);
@@ -94,6 +104,7 @@ class AppFixtures extends Fixture
         $manager->persist($comptable);
 
         // 5. Un client de test
+        // Pas besoin de lui donner ROLE_CLIENT : la classe Client l'ajoute toute seule
         $client = new Client();
         $client->setEmail('client@worktogether.fr');
         $client->setNom('Dupont');
@@ -115,6 +126,7 @@ class AppFixtures extends Fixture
         $commande->setReconductionTacite(true);
         $manager->persist($commande);
 
+        // La ligne de commande : 1 offre Start-up à 900 €
         $ligne = new LigneCommande();
         $ligne->setCommande($commande);
         $ligne->setOffre($offres['Start-up']);

@@ -9,6 +9,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Une commande passée par un client.
+ * Elle contient une ou plusieurs lignes (une par offre achetée)
+ * et réserve des unités.
+ */
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
 {
@@ -17,21 +22,25 @@ class Commande
     #[ORM\Column]
     private ?int $id = null;
 
+    // Date et heure de la commande
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $dateCommande = null;
 
+    // Date de début de la location
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $dateDebut = null;
 
+    // Date de fin de la location (vide si pas encore définie)
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $dateFin = null;
 
-    #[ORM\Column]
+    #[ORM\Column]// Le client paie au mois ou à l'année
     private ?bool $reconductionTacite = null;
 
-    #[ORM\Column(enumType: TypePaiement::class)]
+    #[ORM\Column(enumType: TypePaiement::class)] // La location est-elle renouvelée automatiquement à la fin ?
     private ?TypePaiement $typePaiement = null;
 
+    // Le client qui a passé la commande
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $client = null;
@@ -39,12 +48,14 @@ class Commande
     /**
      * @var Collection<int, Unite>
      */
+    // Les lignes de la commande (composition : supprimées avec la commande)
     #[ORM\ManyToMany(targetEntity: Unite::class, inversedBy: 'commandes')]
     private Collection $unites;
 
     /**
      * @var Collection<int, LigneCommande>
      */
+    // Les unités réservées par la commande
     #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'commande', orphanRemoval: true)]
     private Collection $lignes;
 
@@ -184,6 +195,10 @@ class Commande
 
         return $this;
     }
+    /**
+     * Calcule le total de la commande : prix x quantité de chaque ligne,
+     * additionnés (comme le total d'un ticket de caisse).
+     */
     public function calculerTotal(): float
     {
         $total = 0;

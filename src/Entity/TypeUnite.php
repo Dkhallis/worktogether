@@ -7,6 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Un type d'unité choisi par le client, associé à une couleur
+ * (ex : Serveur web en bleu, Base de données en vert).
+ */
 #[ORM\Entity(repositoryClass: TypeUniteRepository::class)]
 class TypeUnite
 {
@@ -15,15 +19,16 @@ class TypeUnite
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50)]// Nom du type (ex : Serveur web)
     private ?string $libelle = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 20)]// Couleur d'affichage (bleu, vert, gris), utilisée dans le CSS
     private ?string $couleur = null;
 
     /**
      * @var Collection<int, Unite>
      */
+    // Les unités de ce type
     #[ORM\OneToMany(targetEntity: Unite::class, mappedBy: 'typeUnite')]
     private Collection $unites;
 

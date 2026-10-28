@@ -1,19 +1,24 @@
+{# Page "Mes unités" : liste des unités du client connecté #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Mes unités{% endblock %}
 
 {% block body %}
     <h1>Mes unités</h1>
+
+    {# Nom du client connecté et lien de déconnexion #}
     <p>
         Connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}
         — <a href="{{ path('app_logout') }}">Se déconnecter</a>
     </p>
 
+    {# Message de confirmation après une modification #}
     {% for message in app.flashes('success') %}
         <p class="flash-success">{{ message }}</p>
     {% endfor %}
 
     {% if unites is empty %}
+        {# Le client n'a encore rien commandé #}
         <p>Vous n'avez encore aucune unité.</p>
     {% else %}
         <table class="table-unites">
@@ -27,10 +32,15 @@
             </tr>
             </thead>
             <tbody>
+            {# Une ligne par unité #}
             {% for unite in unites %}
                 <tr>
+                    {# Exemple : B001-U03 (méthode getEmplacement de Unite) #}
                     <td>{{ unite.emplacement }}</td>
+                    {# Le nom donné par le client, ou un tiret s'il n'y en a pas #}
                     <td>{{ unite.nomPersonnalise ?? '—' }}</td>
+                    {# Le type en couleur : la couleur en base (bleu, vert, gris)
+                           donne la classe CSS badge-bleu, badge-vert ou badge-gris #}
                     <td>
                         {% if unite.typeUnite %}
                             <span class="badge badge-{{ unite.typeUnite.couleur }}">
@@ -40,7 +50,9 @@
                             —
                         {% endif %}
                     </td>
+                    {# L'état en majuscules : OK, INCIDENT ou MAINTENANCE #}
                     <td>{{ unite.etat.value|upper }}</td>
+
                     <td><a href="{{ path('app_unite_modifier', {id: unite.id}) }}">Modifier</a></td>
                 </tr>
             {% endfor %}

@@ -7,6 +7,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+/**
+ * Classe parente de tous les comptes qui peuvent se connecter.
+ *
+ * Elle est abstraite : on ne crée jamais un "Compte" directement,
+ * mais toujours un Client ou un Utilisateur (personnel).
+ *
+ * Héritage en Class Table (JOINED) : une table "compte" pour les
+ * informations communes, une table "client" et une table "utilisateur"
+ * pour le reste, reliées par l'id. La colonne "type" indique de quel
+ * genre de compte il s'agit.
+ */
 
 #[ORM\Entity(repositoryClass: CompteRepository::class)]
 #[ORM\InheritanceType('SINGLE_TABLE')]
@@ -22,28 +33,30 @@ abstract class Compte implements UserInterface, PasswordAuthenticatedUserInterfa
     #[ORM\Column]
     private ?int $id = null;
 
+    // Email du compte, sert d'identifiant pour se connecter (unique)
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
+    // Rôles du compte (ex : ROLE_ADMIN, ROLE_COMPTABLE)
     #[ORM\Column]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column]// Mot de passe chiffré (jamais stocké en clair)
     private ?string $password = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50)]// Nom de famille
     private ?string $nom = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50)]// Prénom
     private ?string $prenom = null;
 
-    #[ORM\Column]
+    #[ORM\Column]// Date et heure de création du compte
     private ?\DateTimeImmutable $dateCreation = null;
 
     public function getId(): ?int

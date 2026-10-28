@@ -8,6 +8,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Une unité (un "U") dans une baie. C'est ce que les clients louent.
+ * Elle est numérotée de 1 à 42, du bas vers le haut de la baie.
+ */
 #[ORM\Entity(repositoryClass: UniteRepository::class)]
 class Unite
 {
@@ -16,31 +20,37 @@ class Unite
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column]// Numéro de l'unité dans sa baie (de 1 à 42)
     private ?int $numero = null;
 
+    // Nom donné par le client (facultatif)
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $nomPersonnalise = null;
 
+    // État de l'unité : OK, INCIDENT ou MAINTENANCE
     #[ORM\Column(enumType: EtatUnite::class)]
     private ?EtatUnite $etat = null;
 
+    // La baie qui contient l'unité (composition : pas d'unité sans baie)
     #[ORM\ManyToOne(inversedBy: 'unites')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Baie $baie = null;
 
+    // Le type choisi par le client (facultatif)
     #[ORM\ManyToOne(inversedBy: 'unites')]
     private ?TypeUnite $typeUnite = null;
 
     /**
      * @var Collection<int, Commande>
      */
+    // Les commandes qui ont réservé cette unité
     #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'unites')]
     private Collection $commandes;
 
     /**
      * @var Collection<int, Intervention>
      */
+    // Les interventions qui ont touché cette unité
     #[ORM\ManyToMany(targetEntity: Intervention::class, mappedBy: 'Unites')]
     private Collection $interventions;
 
@@ -115,6 +125,10 @@ class Unite
         return $this;
     }
 
+    /**
+     * Renvoie l'emplacement de l'unité au format du sujet, ex : B001-U03.
+     * str_pad ajoute un 0 devant les numéros à un chiffre (3 devient 03).
+     */
     public function getEmplacement(): string
     {
         return $this->baie->getNumero() . '-U' . str_pad($this->numero, 2, '0', STR_PAD_LEFT);

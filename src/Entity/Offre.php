@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Une offre commerciale (Base, Start-up, PME, Entreprise).
+ */
 #[ORM\Entity(repositoryClass: OffreRepository::class)]
 class Offre
 {
@@ -15,24 +18,25 @@ class Offre
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50)]// Nom de l'offre
     private ?string $nom = null;
 
-    #[ORM\Column]
+    #[ORM\Column]// Nombre d'unités incluses dans l'offre
     private ?int $nbUnites = null;
 
-    #[ORM\Column]
+    #[ORM\Column]// Prix par mois, en euros
     private ?float $prixMensuel = null;
 
-    #[ORM\Column]
+    #[ORM\Column]// Remise en pourcentage (ex : 10 pour -10 %)
     private ?float $remise = null;
 
-    #[ORM\Column]
+    #[ORM\Column] // L'offre est-elle encore proposée à la vente ?
     private ?bool $active = null;
 
     /**
      * @var Collection<int, LigneCommande>
      */
+    // Les lignes de commande qui utilisent cette offre
     #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'offre')]
     private Collection $lignesCommande;
 

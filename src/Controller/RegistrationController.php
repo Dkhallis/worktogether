@@ -19,6 +19,7 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
+        // Compte est abstraite : un nouvel inscrit est toujours un Client
         $user = new Client();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -30,6 +31,7 @@ class RegistrationController extends AbstractController
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
+            // On enregistre la date de création du compte
             $user->setDateCreation(new \DateTimeImmutable());
             $entityManager->persist($user);
             $entityManager->flush();
